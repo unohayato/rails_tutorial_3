@@ -36,11 +36,17 @@ class UsersController < ApplicationController
     end
   end
 
+  private
+  def user_params
+    params.require(:user).permit(:name, :email, :password, :password_confirmation)
+  end
+
   # beforeフィルタ
 
   # ログイン済みユーザーかどうか確認
   def logged_in_user
     unless logged_in?
+      store_location
       flash[:danger] = "Please log in."
       redirect_to login_url, status: :see_other
     end
@@ -51,10 +57,5 @@ class UsersController < ApplicationController
       @user = User.find(params[:id])
       redirect_to(root_url, status: :see_other) unless current_user?(@user)
 
-    end
-
-  private
-    def user_params
-      params.require(:user).permit(:name, :email, :password, :password_confirmation)
     end
 end

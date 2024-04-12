@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   has_many :microposts, dependent: :destroy
+  has_one_attached :image
 
   attr_accessor :remember_token, :activation_token, :reset_token
   before_save   :downcase_email
@@ -9,6 +10,7 @@ class User < ApplicationRecord
   validates(:email, {presence: true, length: {maximum: 255}, format: { with: VALID_EMAIL_REGEX }, uniqueness: true})
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
+  validates :image,   content_type: { in: %w[image/jpeg image/gif image/png], message: "must be a valid image format" }, size: { less_than: 5.megabytes, message:   "should be less than 5MB" }
 
 
   class << self
